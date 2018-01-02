@@ -1,5 +1,9 @@
 ﻿using Alura.ListaLeitura.App.Negocio;
 using Alura.ListaLeitura.App.Repositorio;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using System;
 
 namespace Alura.ListaLeitura.App
@@ -8,22 +12,29 @@ namespace Alura.ListaLeitura.App
     {
         static void Main(string[] args)
         {
-            var _repo = new LivroRepositorioCSV();
+            
 
-            ImprimeLista(_repo.ParaLer);
-            ImprimeLista(_repo.Lendo);
-            ImprimeLista(_repo.Lidos);
+            var host = new WebHostBuilder()
+                .UseKestrel()
+                .UseSetting("applicationName", "<Assembly Name>")
+                .UseStartup<Startup>()
+                //.Configure(app => //1
+                //{
+                //    app
+                //        .Run(context => context.Response.WriteAsync("Olá, mundo!")); //3
+                //})
+                .Build();
+
+            host.Run();
+
+            //ImprimeLista(_repo.ParaLer);
+            //ImprimeLista(_repo.Lendo);
+            //ImprimeLista(_repo.Lidos);
         }
 
         static void ImprimeLista(ListaDeLeitura lista)
         {
-            Console.WriteLine(lista.Titulo);
-            Console.WriteLine("==========");
-            foreach (var livro in lista.Livros)
-            {
-                Console.WriteLine(livro);
-            }
-            Console.WriteLine("");
+            Console.WriteLine(lista);
         }
     }
 }
