@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using System;
 
 namespace Alura.ListaLeitura.App
 {
@@ -9,16 +10,18 @@ namespace Alura.ListaLeitura.App
     {
         public void Configure(IApplicationBuilder app)
         {
-            RequestDelegate function = AtendeRequisicao; //evento: requisição chegou!
-            app.Run(function);
+            //RequestDelegate metodo = null;
+            //delegate é um ponteiro fortemente tipado para um método com uma assinatura específica
+            //RequestDelegate function = AtendeRequisicao; //evento: requisição chegou!
+            app.Run(AtendeRequisicao);
         }
 
-        public async Task AtendeRequisicao(HttpContext context)
+        public Task AtendeRequisicao(HttpContext context)
         {
             //requisição está encapsulada no objeto context.Request
             var _repo = new LivroRepositorioCSV();
             //resposta está encapsulada no objeto context.Response
-            await context.Response.WriteAsync(_repo.ParaLer.ToString());
+            return context.Response.WriteAsync(_repo.ParaLer.ToString());
         }
     }
 }

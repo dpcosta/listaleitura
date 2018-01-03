@@ -13,16 +13,9 @@ namespace Alura.ListaLeitura.App
         static void Main(string[] args)
         {
             
-
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .UseSetting("applicationName", "<Assembly Name>")
                 .UseStartup<Startup>()
-                //.Configure(app => //1
-                //{
-                //    app
-                //        .Run(context => context.Response.WriteAsync("Olá, mundo!")); //3
-                //})
                 .Build();
 
             host.Run();
