@@ -1,8 +1,9 @@
-﻿using Alura.ListaLeitura.App.Negocio;
+﻿using System.Collections.Generic;
+using Alura.ListaLeitura.App.Negocio;
 
 namespace Alura.ListaLeitura.App.Repositorio
 {
-    public class LivroRepositorioFake
+    public class LivroRepositorioFake : ILivroRepositorio
     {
         private ListaDeLeitura _paraLer;
         private ListaDeLeitura _lendo;
@@ -31,5 +32,12 @@ namespace Alura.ListaLeitura.App.Repositorio
         public ListaDeLeitura ParaLer => _paraLer;
         public ListaDeLeitura Lendo => _lendo;
         public ListaDeLeitura Lidos => _lidos;
+
+        public IEnumerable<Livro> Todos => throw new System.NotImplementedException();
+
+        public void Incluir(Livro livro)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

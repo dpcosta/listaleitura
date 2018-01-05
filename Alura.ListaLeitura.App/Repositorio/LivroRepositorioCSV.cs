@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using Alura.ListaLeitura.App.Negocio;
 using System.IO;
+using System.Linq;
 
 namespace Alura.ListaLeitura.App.Repositorio
 {
     public class LivroRepositorioCSV : ILivroRepositorio
     {
+        private static readonly string nomeArquivoCSV = "Repositorio\\livros.csv";
+
         private ListaDeLeitura _paraLer;
         private ListaDeLeitura _lendo;
         private ListaDeLeitura _lidos;
@@ -18,25 +21,36 @@ namespace Alura.ListaLeitura.App.Repositorio
             var arrayLendo = new List<Livro>();
             var arrayLidos = new List<Livro>();
 
-            var file = File.OpenText("Repositorio\\livros.csv");
-            while (!file.EndOfStream)
+            using (var file = File.OpenText(LivroRepositorioCSV.nomeArquivoCSV))
             {
-                var textoLivro = file.ReadLine();
-                var infoLivro = textoLivro.Split(';');
-                var livro = new Livro { Titulo = infoLivro[1], Autor = infoLivro[2] };
-                switch (infoLivro[0])
+                while (!file.EndOfStream)
                 {
-                    case "para-ler":
-                        arrayParaLer.Add(livro);
-                        break;
-                    case "lendo":
-                        arrayLendo.Add(livro);
-                        break;
-                    case "lidos":
-                        arrayLidos.Add(livro);
-                        break;
-                    default:
-                        break;
+                    var textoLivro = file.ReadLine();
+                    if (string.IsNullOrEmpty(textoLivro))
+                    {
+                        continue;
+                    }
+                    var infoLivro = textoLivro.Split(';');
+                    var livro = new Livro
+                    {
+                        Id = Convert.ToInt32(infoLivro[1]),
+                        Titulo = infoLivro[2],
+                        Autor = infoLivro[3]
+                    };
+                    switch (infoLivro[0])
+                    {
+                        case "para-ler":
+                            arrayParaLer.Add(livro);
+                            break;
+                        case "lendo":
+                            arrayLendo.Add(livro);
+                            break;
+                        case "lidos":
+                            arrayLidos.Add(livro);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
 
@@ -48,5 +62,16 @@ namespace Alura.ListaLeitura.App.Repositorio
         public ListaDeLeitura ParaLer => _paraLer;
         public ListaDeLeitura Lendo => _lendo;
         public ListaDeLeitura Lidos => _lidos;
+
+        public IEnumerable<Livro> Todos => _paraLer.Livros.Union(_lendo.Livros).Union(_lidos.Livros);
+
+        public void Incluir(Livro livro)
+        {
+            var id = Todos.Select(l => l.Id).Max();
+            using (var file = File.AppendText(LivroRepositorioCSV.nomeArquivoCSV))
+            {
+                file.WriteLine($"para-ler;{id+1};{livro.Titulo};{livro.Autor}");
+            }
+        }
     }
 }
